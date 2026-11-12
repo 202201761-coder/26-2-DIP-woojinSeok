@@ -75,11 +75,11 @@ with col_hist:
 
 f_mask = f_denoised > th_val
 with col_mask:
-    fig, ax = plt.subplots(figsize=(6, 4))
+    fig, ax = plt.subplots(figsize=(4, 5))
     ax.imshow(f_mask, cmap="gray")
     ax.axis("off")
     ax.set_title("Binary Mask")
-    st.pyplot(fig)
+    st.pyplot(fig, width=400)
     plt.close(fig)
 
 # 4. Connected component 추출 및 각 객체의 pixel 수 계산
