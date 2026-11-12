@@ -40,22 +40,23 @@ except (UnidentifiedImageError, OSError) as error:
     st.stop()
 f = np.array(I)
 
-fig, ax = plt.subplots(figsize=(5, 6))
+fig, ax = plt.subplots(figsize=(4, 5))
 image = ax.imshow(f, cmap="gray", vmin=0, vmax=255)
 ax.axis("off")
 fig.colorbar(image, ax=ax)
-st.pyplot(fig)
+
+st.pyplot(fig, width=400)
 plt.close(fig)
-st.caption(f"Image shape: {f.shape} (height, width) | dtype: {f.dtype}")
 
 # 2. 적절한 전처리를 통해 영상의 noise를 줄이기
 st.header("2. Median Filtering (Noise 제거)")
 f_denoised = signal.medfilt2d(f, 7)
-fig, ax = plt.subplots(figsize=(5, 6))
+fig, ax = plt.subplots(figsize=(4, 5))
 image = ax.imshow(f_denoised, cmap="gray", vmin=0, vmax=255)
 ax.axis("off")
 fig.colorbar(image, ax=ax)
-st.pyplot(fig)
+
+st.pyplot(fig, width=400)
 plt.close(fig)
 
 # 3. 적절한 임계값을 찾아 thresholding을 통해 binary mask를 생성하기
@@ -85,10 +86,11 @@ with col_mask:
 st.header("4. Connected Component Labeling")
 labels, nums = nd.label(f_mask)  # 교수님 원본: 기본 4-connectivity
 
-fig, ax = plt.subplots(figsize=(5, 6))
+fig, ax = plt.subplots(figsize=(4, 5))
 ax.imshow(labels, cmap="Spectral_r")
 ax.axis("off")
-st.pyplot(fig)
+
+st.pyplot(fig, width=400)
 plt.close(fig)
 
 st.metric("Connected Components", nums)
