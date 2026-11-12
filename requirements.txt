@@ -1,2 +1,5 @@
 streamlit
-pillow
+numpy
+scipy
+matplotlib
+Pillow
