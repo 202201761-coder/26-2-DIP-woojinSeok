@@ -16,7 +16,7 @@ from PIL import Image, UnidentifiedImageError
 
 st.set_page_config(page_title="HW05 Object Counting", layout="wide")
 st.title("HW05 — Object Counting")
-st.write("사진을 업로드하면 교수님 HW05 실습의 1~5단계를 순서대로 수행합니다.")
+st.write("사진을 업로드하면 HW05 실습의 1~5단계를 순서대로 수행합니다.")
 
 # Streamlit에서는 Google Drive 마운트 대신 웹에서 직접 사진을 업로드합니다.
 uploaded_file = st.file_uploader(
