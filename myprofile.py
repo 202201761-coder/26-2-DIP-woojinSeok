@@ -1,9 +1,9 @@
-"""Homework #5 (Object Counting) implemented as a Streamlit web app.
+"Homework #6 (Object Counting) implemented as a Streamlit web app.
 
 Pipeline follows the original HW05 notebook:
 1) grayscale, 2) 7x7 median filter, 3) thresholding,
 4) scipy.ndimage.label (default 4-connectivity), 5) largest/smallest component.
-"""
+"
 
 import io
 
