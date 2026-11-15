@@ -851,34 +851,75 @@ with st.expander("Processing Details & Object Statistics"):
                 width="stretch"
             )
 
+        
         if count:
-            biggest = int(np.argmax(areas)) + 1
-            smallest = int(np.argmin(areas)) + 1
+            ranked = np.argsort(areas)[::-1]
 
-            col1, col2 = st.columns(2)
+            biggest = int(ranked[0]) + 1
+            smallest = int(ranked[-1]) + 1
 
-            with col1:
-                st.markdown(
-                    f"**Largest Region · Label {biggest}**"
-                )
-                st.image(
-                    preview(
-                        (labels == biggest).astype(np.uint8) * 255
-                    ),
-                    width="stretch"
-                )
+            regions = [("Largest Region", biggest)]
 
-            with col2:
-                st.markdown(
-                    f"**Smallest Region · Label {smallest}**"
-                )
-                st.image(
-                    preview(
-                        (labels == smallest).astype(np.uint8) * 255
-                    ),
-                    width="stretch"
-                )
+            if count >= 3:
+                second = int(ranked[1]) + 1
+                regions.append(("Second Largest Region", second))
 
+            if count >= 2:
+                regions.append(("Smallest Region", smallest))
+
+            boxes = ndi.find_objects(labels)
+
+            side = max(
+                max(
+                    boxes[idx - 1][0].stop - boxes[idx - 1][0].start,
+                    boxes[idx - 1][1].stop - boxes[idx - 1][1].start
+                )
+                for _, idx in regions
+            ) + 24
+
+            side = max(48, side)
+
+            def component_crop(region_id):
+                box = boxes[region_id - 1]
+
+                cy = (box[0].start + box[0].stop) // 2
+                cx = (box[1].start + box[1].stop) // 2
+
+                y0 = cy - side // 2
+                x0 = cx - side // 2
+
+                h, w = labels.shape
+
+                sy0, sy1 = max(0, y0), min(h, y0 + side)
+                sx0, sx1 = max(0, x0), min(w, x0 + side)
+
+                crop = np.zeros((side, side), dtype=np.uint8)
+
+                crop[
+                    sy0 - y0:sy1 - y0,
+                    sx0 - x0:sx1 - x0
+                ] = (
+                    labels[sy0:sy1, sx0:sx1] == region_id
+                ).astype(np.uint8) * 255
+
+                return crop
+
+            st.markdown("**Region Size Comparison**")
+
+            columns = st.columns(len(regions))
+
+            for column, (title, region_id) in zip(columns, regions):
+                with column:
+                    st.markdown(f"**{title}**")
+                    st.image(
+                        component_crop(region_id),
+                        width="stretch"
+                    )
+                    st.caption(
+                        f"Label {region_id} · "
+                        f"{int(areas[region_id - 1]):,} px²"
+                    )
+                    
     else:
         st.info(
             "Circle areas are estimates calculated from their radii."
